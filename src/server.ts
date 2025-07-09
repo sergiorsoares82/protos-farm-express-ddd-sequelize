@@ -1,7 +1,7 @@
 import express from 'express';
 import router from './shared/interface/routes';
 import 'dotenv/config'; // Load environment variables from .env file
-import { Sequelize } from 'sequelize';
+import { Sequelize, type Dialect } from 'sequelize';
 
 const app = express();
 
@@ -22,10 +22,25 @@ if (!POSTGRES_PASSWORD) {
   throw new Error('Environment variable POSTGRES_PASSWORD is not set');
 }
 
-const sequelize = new Sequelize(POSTGRES_DB, 'postgres', 'postgres', {
-  host: 'localhost',
-  dialect: 'postgres', // or 'postgres', 'sqlite', etc.
-  port: 5433, // Change to the port you mapped in docker-compose
+const POSTGRES_HOST = process.env.POSTGRES_HOST;
+if (!POSTGRES_HOST) {
+  throw new Error('Environment variable POSTGRES_HOST is not set');
+}
+
+const POSTGRES_DIALECT = process.env.POSTGRES_DIALECT;
+if (!POSTGRES_DIALECT) {
+  throw new Error('Environment variable POSTGRES_DIALECT is not set');
+}
+
+const POSTGRES_PORT = process.env.POSTGRES_PORT;
+if (!POSTGRES_PORT) {
+  throw new Error('Environment variable POSTGRES_PORT is not set');
+}
+
+const sequelize = new Sequelize(POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD, {
+  host: POSTGRES_HOST,
+  dialect: POSTGRES_DIALECT as Dialect,
+  port: Number(POSTGRES_PORT), // Change to the port you mapped in docker-compose
 });
 
 async function startServer() {
