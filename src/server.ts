@@ -25,17 +25,15 @@ const sequelize = new Sequelize(
   },
 );
 
-console.log(sequelize);
-
-// async function startServer() {
-//   try {
-//     await sequelize.authenticate();
-//     console.log('🟢 Database connected');
-//   } catch (error) {
-//     console.error('🔴 Failed to connect to the database:', error);
-//   }
-// }
-// startServer();
+async function startServer() {
+  try {
+    await sequelize.authenticate();
+    console.log('🟢 Database connected');
+  } catch (error) {
+    console.error('🔴 Failed to connect to the database:', error);
+  }
+}
+startServer();
 
 app.listen(3000, () => {
   console.log('Server is running on port 3000');
