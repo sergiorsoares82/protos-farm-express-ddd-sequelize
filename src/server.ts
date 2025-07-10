@@ -1,6 +1,8 @@
 import 'dotenv/config'; // Load environment variables from .env file
 import express from 'express';
 import router from './shared/interface/routes';
+import { Sequelize, type Dialect } from 'sequelize';
+import dbEnvironmentVariables from './shared/interface/config';
 
 const app = express();
 
@@ -10,16 +12,18 @@ app.get('/', (req, res) => {
   res.send('Welcome to Protos Farm API');
 });
 
-// const sequelize = new Sequelize(
-//   dbEnvironmentVariables.POSTGRES_DB,
-//   dbEnvironmentVariables.POSTGRES_USER,
-//   dbEnvironmentVariables.POSTGRES_PASSWORD,
-//   {
-//     host: dbEnvironmentVariables.POSTGRES_HOST,
-//     dialect: dbEnvironmentVariables.POSTGRES_DIALECT as Dialect,
-//     port: Number(dbEnvironmentVariables.POSTGRES_PORT), // Change to the port you mapped in docker-compose
-//   },
-// );
+const sequelize = new Sequelize(
+  dbEnvironmentVariables.POSTGRES_DB,
+  dbEnvironmentVariables.POSTGRES_USER,
+  dbEnvironmentVariables.POSTGRES_PASSWORD,
+  {
+    host: dbEnvironmentVariables.POSTGRES_HOST,
+    dialect: dbEnvironmentVariables.POSTGRES_DIALECT as Dialect,
+    port: Number(dbEnvironmentVariables.POSTGRES_PORT), // Change to the port you mapped in docker-compose
+  },
+);
+
+console.log(sequelize);
 
 // async function startServer() {
 //   try {
