@@ -2,6 +2,7 @@ import 'dotenv/config'; // Load environment variables from .env file
 import express from 'express';
 import router from './shared/interface/routes';
 import { Sequelize, type Dialect } from 'sequelize';
+import pg from 'pg'; // Import pg for PostgreSQL dialect
 import dbEnvironmentVariables from './shared/interface/config';
 
 const app = express();
@@ -19,6 +20,7 @@ const sequelize = new Sequelize(
   {
     host: dbEnvironmentVariables.POSTGRES_HOST,
     dialect: dbEnvironmentVariables.POSTGRES_DIALECT as Dialect,
+    dialectModule: pg;
     port: Number(dbEnvironmentVariables.POSTGRES_PORT), // Change to the port you mapped in docker-compose
   },
 );
