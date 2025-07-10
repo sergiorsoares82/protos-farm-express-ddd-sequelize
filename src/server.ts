@@ -20,7 +20,7 @@ const sequelize = new Sequelize(
   {
     host: dbEnvironmentVariables.POSTGRES_HOST,
     dialect: dbEnvironmentVariables.POSTGRES_DIALECT as Dialect,
-    dialectModule: pg;
+    dialectModule: pg,
     port: Number(dbEnvironmentVariables.POSTGRES_PORT), // Change to the port you mapped in docker-compose
   },
 );
