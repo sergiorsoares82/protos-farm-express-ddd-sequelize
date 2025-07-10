@@ -5,7 +5,7 @@
   "main": "src/server.ts",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "lint:eslint:check": "eslint .",
     "lint:eslint:fix": "eslint . --fix",
     "lint:prettier:check": "prettier --check .",
@@ -17,19 +17,26 @@
   "devDependencies": {
     "@eslint/js": "^9.30.1",
     "@types/express": "^5.0.3",
+    "@types/jest": "^30.0.0",
     "@types/pg": "^8.15.4",
     "eslint": "^9.30.1",
     "eslint-plugin-prettier": "^5.5.1",
     "globals": "^16.3.0",
+    "jest": "^30.0.4",
     "prettier": "^3.6.2",
+    "ts-node": "^10.9.2",
     "tsx": "^4.20.3",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.36.0"
   },
   "dependencies": {
+    "@swc/cli": "^0.7.8",
+    "@swc/core": "^1.12.11",
+    "@swc/jest": "^0.2.39",
     "dotenv": "^17.1.0",
     "express": "^5.1.0",
     "pg": "^8.16.3",
+    "rm": "^0.1.8",
     "sequelize": "^6.37.7"
   }
 }
