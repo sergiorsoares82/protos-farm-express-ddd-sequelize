@@ -1,3 +1,4 @@
+import { Entity } from '../_shared/entity';
 import { EntityValidationError } from '../_shared/validators/validation.error';
 import { Uuid } from '../_shared/value-objects/uuid.vo';
 import { UserValidatorFactory } from './user.validator';
@@ -19,7 +20,7 @@ type UserCreateProps = {
   is_active?: boolean;
 };
 
-export class UserEntity {
+export class UserEntity extends Entity<UserConstructorProps> {
   user_id: Uuid;
   username: string;
   email: string;
@@ -29,6 +30,7 @@ export class UserEntity {
   updated_at: Date;
 
   constructor(props: UserConstructorProps) {
+    super();
     this.user_id = props.user_id ?? new Uuid();
     this.username = props.username;
     this.email = props.email;
@@ -36,6 +38,10 @@ export class UserEntity {
     this.is_active = props.is_active ?? true;
     this.created_at = props.created_at ?? new Date();
     this.updated_at = props.updated_at ?? new Date();
+  }
+
+  get entity_id(): Uuid {
+    return this.user_id;
   }
 
   static create(props: UserCreateProps): UserEntity {
