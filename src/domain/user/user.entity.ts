@@ -1,4 +1,5 @@
 import { Uuid } from '../_shared/value-objects/uuid.vo';
+import { UserValidatorFactory } from './user.validator';
 
 type UserConstructorProps = {
   user_id?: Uuid;
@@ -63,6 +64,11 @@ export class UserEntity {
   activate(): void {
     this.is_active = true;
     this.updated_at = new Date();
+  }
+
+  static validate(user: UserEntity): boolean {
+    const validator = UserValidatorFactory.create();
+    return validator.validate(user);
   }
 
   toJSON(): UserConstructorProps {
