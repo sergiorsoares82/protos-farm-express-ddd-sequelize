@@ -3,6 +3,10 @@ import { startApp } from '../../../utils/start-int-app';
 import { Express } from 'express';
 
 describe('Post User Routes Test Suite', () => {
+  console.log('DB config', {
+    host: process.env.POSTGRES_HOST,
+    port: process.env.POSTGRES_PORT,
+  });
   const ctx = startApp();
   let app: Express;
   beforeEach(() => {
