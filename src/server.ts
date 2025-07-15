@@ -14,6 +14,7 @@ app.get('/', (req, res) => {
 
 const sequelize = new Sequelize({ ...sequelizeOptions });
 
+console.log(process.env.NODE_ENV);
 async function startServer() {
   try {
     await sequelize.authenticate();

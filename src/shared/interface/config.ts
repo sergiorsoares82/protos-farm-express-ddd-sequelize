@@ -46,5 +46,4 @@ if (dialect === 'sqlite') {
   throw new Error(`Unsupported database dialect: ${dialect}`);
 }
 
-console.log('dbEnvironmentVariables:', sequelizeOptions);
 export default sequelizeOptions;
