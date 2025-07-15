@@ -24,6 +24,8 @@
     "globals": "^16.3.0",
     "jest": "^30.0.4",
     "prettier": "^3.6.2",
+    "sequelize-typescript": "^2.1.6",
+    "sqlite3": "^5.1.7",
     "ts-node": "^10.9.2",
     "tsx": "^4.20.3",
     "typescript": "^5.8.3",
