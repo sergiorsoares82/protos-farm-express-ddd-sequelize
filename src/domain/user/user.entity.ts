@@ -20,7 +20,7 @@ type UserCreateProps = {
   is_active?: boolean;
 };
 
-export class UserEntity extends Entity<UserConstructorProps> {
+export class UserEntity extends Entity {
   user_id: Uuid;
   username: string;
   email: string;

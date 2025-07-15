@@ -28,6 +28,7 @@ export default defineConfig([
       '@typescript-eslint/no-unused-vars': 'warn',
       '@typescript-eslint/explicit-function-return-type': 'off',
       'prettier/prettier': 'error',
+      '@typescript-eslint/no-empty-object-type': 'off',
     },
   },
   tseslint.configs.recommended,

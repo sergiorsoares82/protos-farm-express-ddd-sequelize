@@ -1,6 +1,6 @@
 import type { ValueObject } from './value-object';
 
-export abstract class Entity<T> {
+export abstract class Entity {
   abstract get entity_id(): ValueObject;
-  abstract toJSON(): T;
+  abstract toJSON(): unknown;
 }
