@@ -1,5 +1,7 @@
+import { Uuid } from '../_shared/value-objects/uuid.vo';
+
 type UserConstructorProps = {
-  id?: string;
+  user_id?: Uuid;
   username: string;
   email: string;
   password: string;
@@ -16,7 +18,7 @@ type UserCreateProps = {
 };
 
 export class UserEntity {
-  id: string;
+  user_id: Uuid;
   username: string;
   email: string;
   password: string;
@@ -25,7 +27,7 @@ export class UserEntity {
   updated_at: Date;
 
   constructor(props: UserConstructorProps) {
-    this.id = props.id || '';
+    this.user_id = props.user_id ?? new Uuid();
     this.username = props.username;
     this.email = props.email;
     this.password = props.password;
@@ -65,7 +67,7 @@ export class UserEntity {
 
   toJSON(): UserConstructorProps {
     return {
-      id: this.id,
+      user_id: this.user_id,
       username: this.username,
       email: this.email,
       password: this.password,

@@ -1,3 +1,4 @@
+import { Uuid } from '../../../src/domain/_shared/value-objects/uuid.vo';
 import { UserEntity } from '../../../src/domain/user/user.entity';
 
 describe('User Entity Unit Test', () => {
@@ -11,7 +12,7 @@ describe('User Entity Unit Test', () => {
 
       expect(user).toStrictEqual(
         new UserEntity({
-          id: expect.any(String),
+          user_id: user.user_id,
           username: 'John Doe',
           email: 'john.doe@gmail.com',
           password: 'secure_password',
@@ -25,7 +26,7 @@ describe('User Entity Unit Test', () => {
     it('should create a user with optional properties', () => {
       const now = new Date();
       const user = new UserEntity({
-        id: '123',
+        user_id: new Uuid(),
         username: 'Jane Doe',
         email: 'john.doe@gmail.com',
         password: 'secure_password',
@@ -36,7 +37,7 @@ describe('User Entity Unit Test', () => {
 
       expect(user).toStrictEqual(
         new UserEntity({
-          id: '123',
+          user_id: user.user_id,
           username: 'Jane Doe',
           email: 'john.doe@gmail.com',
           password: 'secure_password',
@@ -57,7 +58,7 @@ describe('User Entity Unit Test', () => {
 
       expect(user).toStrictEqual(
         new UserEntity({
-          id: expect.any(String),
+          user_id: user.user_id,
           username: 'Alice',
           email: 'alice@gmail.com',
           password: 'secure_password',
@@ -77,7 +78,7 @@ describe('User Entity Unit Test', () => {
       });
       expect(user).toStrictEqual(
         new UserEntity({
-          id: expect.any(String),
+          user_id: user.user_id,
           username: 'Bob',
           email: 'bob@gmail.com',
           password: 'secure_password',
@@ -88,7 +89,6 @@ describe('User Entity Unit Test', () => {
       );
     });
   });
-
   describe('Operations', () => {
     it('should change username', () => {
       const user = UserEntity.create({
@@ -149,6 +149,32 @@ describe('User Entity Unit Test', () => {
       user.activate();
       expect(user.is_active).toBe(true);
       expect(user.updated_at).toBeInstanceOf(Date);
+    });
+  });
+  describe('user_id field', () => {
+    const arrange = [
+      {
+        user_id: new Uuid(),
+      },
+      {
+        user_id: null,
+      },
+      {
+        user_id: undefined,
+      },
+    ];
+
+    test.each(arrange)('id = %j', ({ user_id }) => {
+      const user = new UserEntity({
+        user_id: user_id as Uuid,
+        username: 'john_doe',
+        email: 'john.doe@gmail.com',
+        password: 'secure_password',
+      });
+      expect(user.user_id).toBeInstanceOf(Uuid);
+      if (user_id instanceof Uuid) {
+        expect(user.user_id).toBe(user_id);
+      }
     });
   });
 });
