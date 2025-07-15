@@ -15,6 +15,7 @@ export default defineConfig([
     files: ['**/*.{js,mjs,cjs,ts,mts,cts}'],
     languageOptions: { globals: globals.browser },
   },
+  tseslint.configs.recommended,
   {
     files: ['**/*.ts'],
     languageOptions: {
@@ -29,7 +30,7 @@ export default defineConfig([
       '@typescript-eslint/explicit-function-return-type': 'off',
       'prettier/prettier': 'error',
       '@typescript-eslint/no-empty-object-type': 'off',
+      '@typescript-eslint/no-explicit-any': 'warn',
     },
   },
-  tseslint.configs.recommended,
 ]);
