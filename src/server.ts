@@ -1,8 +1,8 @@
 import 'dotenv/config'; // Load environment variables from .env file
 import express from 'express';
 import { Sequelize } from 'sequelize-typescript';
-import sequelizeOptions from './shared/interface/config';
-import router from './shared/interface/routes';
+import sequelizeOptions from './interface/_shared/interface/config';
+import router from './interface/_shared/interface/routes';
 
 const app = express();
 

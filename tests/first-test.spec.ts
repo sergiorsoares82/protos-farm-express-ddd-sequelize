@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import dbEnvironmentVariables from '../src/shared/interface/config';
+import dbEnvironmentVariables from '../src/interface/_shared/interface/config';
 import { Sequelize } from 'sequelize';
 
 dotenv.config({ path: '.env.test' });

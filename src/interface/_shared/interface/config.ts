@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import path from 'node:path';
 import { SequelizeOptions } from 'sequelize-typescript';
+import pg from 'pg'; // Import pg for PostgreSQL dialect support
 
 // Determine the correct .env file based on NODE_ENV
 const envFile = `.env${process.env.NODE_ENV ? `.${process.env.NODE_ENV}` : ''}`;
@@ -35,6 +36,7 @@ if (dialect === 'sqlite') {
 } else if (dialect === 'postgres') {
   sequelizeOptions = {
     dialect: 'postgres',
+    dialectModule: pg,
     host: requireEnvVar('POSTGRES_HOST'),
     port: Number(process.env.POSTGRES_PORT || '5432'),
     database: requireEnvVar('POSTGRES_DB'),

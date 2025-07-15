@@ -1,7 +1,7 @@
 import express, { Express } from 'express';
 import { Sequelize } from 'sequelize-typescript';
-import sequelizeOptions from '../../src/shared/interface/config';
-import router from '../../src/shared/interface/routes';
+import sequelizeOptions from '../../src/interface/_shared/interface/config';
+import router from '../../src/interface/_shared/interface/routes';
 
 export function startApp() {
   let app: Express;

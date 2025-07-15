@@ -1,5 +1,5 @@
-export class CreateUserUseCase {
-  async execute() {
+export class UserUseCase {
+  async createUser() {
     return {
       message: 'User created successfully',
     };

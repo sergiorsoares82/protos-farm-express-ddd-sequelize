@@ -1,4 +1,4 @@
-import { ValueObject } from '../../../src/domain/@shared/value-object';
+import { ValueObject } from '../../../src/domain/_shared/value-object';
 
 class SimpleValueObject extends ValueObject {
   constructor(private readonly value: string) {
