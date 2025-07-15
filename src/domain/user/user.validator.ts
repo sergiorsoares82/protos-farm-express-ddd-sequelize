@@ -1,9 +1,10 @@
-import { MaxLength } from 'class-validator';
+import { IsNotEmpty, MaxLength } from 'class-validator';
 import type { UserEntity } from './user.entity';
 import { ClassValidatorFields } from '../_shared/validators/class-validator-fields';
 
 export class UserRules {
   @MaxLength(50)
+  @IsNotEmpty()
   username: string;
 
   @MaxLength(100)

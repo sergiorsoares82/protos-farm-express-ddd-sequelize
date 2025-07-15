@@ -1,3 +1,4 @@
+import { EntityValidationError } from '../_shared/validators/validation.error';
 import { Uuid } from '../_shared/value-objects/uuid.vo';
 import { UserValidatorFactory } from './user.validator';
 
@@ -38,22 +39,28 @@ export class UserEntity {
   }
 
   static create(props: UserCreateProps): UserEntity {
-    return new UserEntity(props);
+    // return new UserEntity(props);
+    const user = new UserEntity(props);
+    UserEntity.validate(user);
+    return user;
   }
 
   changeUsername(newUsername: string): void {
     this.username = newUsername;
     this.updated_at = new Date();
+    UserEntity.validate(this);
   }
 
   changeEmail(newEmail: string): void {
     this.email = newEmail;
     this.updated_at = new Date();
+    UserEntity.validate(this);
   }
 
   changePassword(newPassword: string): void {
     this.password = newPassword;
     this.updated_at = new Date();
+    UserEntity.validate(this);
   }
 
   deactivate(): void {
@@ -68,6 +75,10 @@ export class UserEntity {
 
   static validate(user: UserEntity): boolean {
     const validator = UserValidatorFactory.create();
+    const isValid = validator.validate(user);
+    if (!isValid) {
+      throw new EntityValidationError(validator.errors ?? {});
+    }
     return validator.validate(user);
   }
 

@@ -1,7 +1,17 @@
+import { EntityValidationError } from '../../../src/domain/_shared/validators/validation.error';
 import { Uuid } from '../../../src/domain/_shared/value-objects/uuid.vo';
 import { UserEntity } from '../../../src/domain/user/user.entity';
 
 describe('User Entity Unit Test', () => {
+  let validateSpy: jest.SpyInstance;
+
+  beforeEach(() => {
+    validateSpy = jest.spyOn(UserEntity, 'validate');
+  });
+
+  afterEach(() => {
+    validateSpy.mockRestore(); // <- Adicione isso aqui
+  });
   describe('Constructor', () => {
     it('should create a user with required properties', () => {
       const user = new UserEntity({
@@ -67,6 +77,7 @@ describe('User Entity Unit Test', () => {
           updated_at: expect.any(Date),
         }),
       );
+      expect(validateSpy).toHaveBeenCalledTimes(1);
     });
 
     it('should create a user using all props', () => {
@@ -87,6 +98,7 @@ describe('User Entity Unit Test', () => {
           updated_at: expect.any(Date),
         }),
       );
+      expect(validateSpy).toHaveBeenCalledTimes(1);
     });
   });
   describe('Operations', () => {
@@ -97,9 +109,12 @@ describe('User Entity Unit Test', () => {
         password: 'secure_password',
       });
 
+      expect(validateSpy).toHaveBeenCalledTimes(1);
+
       user.changeUsername('Alice Smith');
       expect(user.username).toBe('Alice Smith');
       expect(user.updated_at).toBeInstanceOf(Date);
+      expect(validateSpy).toHaveBeenCalledTimes(2);
     });
 
     it('should change email', () => {
@@ -109,9 +124,12 @@ describe('User Entity Unit Test', () => {
         password: 'secure_password',
       });
 
+      expect(validateSpy).toHaveBeenCalledTimes(1);
+
       user.changeEmail('alice_updated@gmail.com');
       expect(user.email).toBe('alice_updated@gmail.com');
       expect(user.updated_at).toBeInstanceOf(Date);
+      expect(validateSpy).toHaveBeenCalledTimes(2);
     });
 
     it('should change password', () => {
@@ -121,9 +139,12 @@ describe('User Entity Unit Test', () => {
         password: 'secure_password',
       });
 
+      expect(validateSpy).toHaveBeenCalledTimes(1);
+
       user.changePassword('new_secure_password');
       expect(user.password).toBe('new_secure_password');
       expect(user.updated_at).toBeInstanceOf(Date);
+      expect(validateSpy).toHaveBeenCalledTimes(2);
     });
 
     it('should deactivate user', () => {
@@ -132,6 +153,8 @@ describe('User Entity Unit Test', () => {
         email: 'alice@gmail.com',
         password: 'secure_password',
       });
+
+      expect(validateSpy).toHaveBeenCalledTimes(1);
 
       user.deactivate();
       expect(user.is_active).toBe(false);
@@ -145,6 +168,8 @@ describe('User Entity Unit Test', () => {
         password: 'secure_password',
         is_active: false,
       });
+
+      expect(validateSpy).toHaveBeenCalledTimes(1);
 
       user.activate();
       expect(user.is_active).toBe(true);
@@ -175,6 +200,23 @@ describe('User Entity Unit Test', () => {
       if (user_id instanceof Uuid) {
         expect(user.user_id).toBe(user_id);
       }
+    });
+  });
+  describe('UserValidator', () => {
+    describe('create', () => {
+      it('should create a UserValidator instance', () => {
+        expect(() => {
+          UserEntity.create({
+            username: '',
+            email: '',
+            password: '',
+          });
+        }).toThrow(
+          new EntityValidationError({
+            name: ['name is required'],
+          }),
+        );
+      });
     });
   });
 });

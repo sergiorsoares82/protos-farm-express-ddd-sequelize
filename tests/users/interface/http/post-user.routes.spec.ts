@@ -19,7 +19,6 @@ describe('Post User Routes Test Suite', () => {
       email: 'alice@example.com',
     });
 
-    console.log('Response body:', response.body); // Optional debug
     expect(response.status).toBe(201);
   });
 });
