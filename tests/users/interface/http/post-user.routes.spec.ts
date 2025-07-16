@@ -15,8 +15,9 @@ describe('Post User Routes Test Suite', () => {
 
   it('should create a user in the database', async () => {
     const response = await request(app).post('/users').send({
-      name: 'Alice',
+      username: 'Alice',
       email: 'alice@example.com',
+      password: 'password123',
     });
 
     expect(response.status).toBe(201);

@@ -1,10 +1,11 @@
 import 'dotenv/config'; // Load environment variables from .env file
 import express from 'express';
 import { Sequelize } from 'sequelize-typescript';
-import sequelizeOptions from './interface/_shared/interface/config';
-import router from './interface/_shared/interface/routes';
+import sequelizeOptions from './interface/_shared/config';
+import router from './interface/_shared/routes';
 
 const app = express();
+app.use(express.json()); // Middleware to parse JSON bodies
 
 app.use(router);
 
