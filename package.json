@@ -40,6 +40,7 @@
     "@swc/core": "^1.12.11",
     "@swc/jest": "^0.2.39",
     "@types/lodash": "^4.17.20",
+    "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
     "dotenv": "^17.1.0",
     "express": "^5.1.0",
@@ -48,6 +49,6 @@
     "rm": "^0.1.8",
     "sequelize": "^6.37.7",
     "uuid": "^11.1.0",
-    "zod": "^4.0.5"
+    "zod": "^3.25.76"
   }
 }

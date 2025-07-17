@@ -1,7 +1,7 @@
 import { ZodType } from 'zod';
 import { Request, Response, NextFunction } from 'express';
 
-export const validateBody = <T>(schema: ZodType<T, any, any>) => {
+export const validateDto = <T>(schema: ZodType<T, any, any>) => {
   return (req: Request, res: Response, next: NextFunction) => {
     const result = schema.safeParse(req.body);
 

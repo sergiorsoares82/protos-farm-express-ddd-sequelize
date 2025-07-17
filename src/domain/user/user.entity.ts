@@ -1,3 +1,4 @@
+import z from 'zod';
 import { Entity } from '../_shared/entity';
 import { EntityValidationError } from '../_shared/validators/validation.error';
 import { Uuid } from '../_shared/value-objects/uuid.vo';
@@ -13,12 +14,15 @@ type UserConstructorProps = {
   updated_at?: Date;
 };
 
-type UserCreateProps = {
-  username: string;
-  email: string;
-  password: string;
-  is_active?: boolean;
-};
+// Zod Schema for external input (DTO)
+const UserCreateSchema = z.object({
+  username: z.string().min(3).max(50),
+  email: z.string().email(),
+  password: z.string().min(6),
+  is_active: z.boolean().optional().default(true),
+});
+
+export type UserCreateProps = z.infer<typeof UserCreateSchema>;
 
 export class UserEntity extends Entity {
   user_id: Uuid;
@@ -38,6 +42,7 @@ export class UserEntity extends Entity {
     this.is_active = props.is_active ?? true;
     this.created_at = props.created_at ?? new Date();
     this.updated_at = props.updated_at ?? new Date();
+    UserEntity.validate(this);
   }
 
   get entity_id(): Uuid {
@@ -45,10 +50,9 @@ export class UserEntity extends Entity {
   }
 
   static create(props: UserCreateProps): UserEntity {
-    // return new UserEntity(props);
-    const user = new UserEntity(props);
-    UserEntity.validate(user);
-    return user;
+    const parsed = UserCreateSchema.parse(props);
+
+    return new UserEntity(parsed);
   }
 
   changeUsername(newUsername: string): void {
@@ -60,22 +64,27 @@ export class UserEntity extends Entity {
   changeEmail(newEmail: string): void {
     this.email = newEmail;
     this.updated_at = new Date();
+    this.touch();
     UserEntity.validate(this);
   }
 
   changePassword(newPassword: string): void {
     this.password = newPassword;
-    this.updated_at = new Date();
+    this.touch();
     UserEntity.validate(this);
   }
 
   deactivate(): void {
     this.is_active = false;
-    this.updated_at = new Date();
+    this.touch();
   }
 
   activate(): void {
     this.is_active = true;
+    this.touch();
+  }
+
+  private touch(): void {
     this.updated_at = new Date();
   }
 
