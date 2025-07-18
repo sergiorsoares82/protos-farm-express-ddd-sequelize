@@ -10,7 +10,8 @@
     "lint:eslint:fix": "eslint . --fix",
     "lint:prettier:check": "prettier --check .",
     "lint:prettier:fix": "prettier --write .",
-    "test:services:up": "docker compose -f compose.test.yaml up -d"
+    "test:services:up": "docker compose -f compose.test.yaml up -d",
+    "migrations:create": "tsx src/infra/database/migrator/create-migration.ts"
   },
   "keywords": [],
   "author": "",
@@ -48,6 +49,7 @@
     "pg": "^8.16.3",
     "rm": "^0.1.8",
     "sequelize": "^6.37.7",
+    "umzug": "^3.8.2",
     "uuid": "^11.1.0",
     "zod": "^3.25.76"
   }

@@ -1,13 +1,13 @@
 import { UserUseCase } from '../../../../src/application/users/use-cases/user.use-case';
 import { UserEntity } from '../../../../src/domain/user/user.entity';
-import { InMemoryUsersRepository } from '../../../../src/infra/repositories/in-memory/in-memory-users.repository';
+import { UserInMemoryRepository } from '../../../../src/infra/repositories/in-memory/user-in-memory.repository';
 
 describe('In-Memory Users Repository Unit Test', () => {
-  let usersRepository: InMemoryUsersRepository;
+  let usersRepository: UserInMemoryRepository;
   let userUseCase: UserUseCase;
 
   beforeAll(() => {
-    usersRepository = new InMemoryUsersRepository();
+    usersRepository = new UserInMemoryRepository();
     userUseCase = new UserUseCase(usersRepository);
   });
 
@@ -16,6 +16,7 @@ describe('In-Memory Users Repository Unit Test', () => {
       username: 'Alice',
       email: 'alice@gmail.com',
       password: 'password',
+      is_active: true,
     });
 
     await usersRepository.insert(user);
