@@ -1,33 +1,29 @@
 import express, { Express } from 'express';
 import { Sequelize } from 'sequelize-typescript';
-import sequelizeOptions from '../../src/interface/_shared/config';
-import router from '../../src/interface/_shared/routes';
+import sequelizeOptions from '../../src/interfaces/_shared/config';
+import router from '../../src/interfaces/http/routes/routes';
+import { errorHandler } from '../../src/interfaces/http/middlewares/error-handler.middleware';
+import { initAllModels } from '../../src/infrastructure/database/init-models';
 
 export function startApp() {
-  let app: Express;
-  let sequelize: Sequelize;
+  const sequelize = new Sequelize(sequelizeOptions);
+  initAllModels(sequelize);
+
+  const app: Express = express();
+  app.use(express.json());
+  app.use(router);
+  app.use(errorHandler); // precisa estar no final
 
   beforeEach(async () => {
-    sequelize = new Sequelize(sequelizeOptions);
-    await sequelize.sync({ force: true });
-
-    app = express();
-    app.use(express.json());
-    app.use(router);
+    await sequelize.sync({ force: true }); // garante DB limpo a cada teste
   });
 
-  afterEach(async () => {
+  afterAll(async () => {
     await sequelize.close();
   });
 
   return {
-    get app() {
-      if (!app) throw new Error('App not initialized');
-      return app;
-    },
-    get db() {
-      if (!sequelize) throw new Error('DB not initialized');
-      return sequelize;
-    },
+    app,
+    db: sequelize,
   };
 }

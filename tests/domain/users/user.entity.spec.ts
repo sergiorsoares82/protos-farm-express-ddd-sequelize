@@ -1,4 +1,3 @@
-import { EntityValidationError } from '../../../src/domain/_shared/validators/validation.error';
 import { Uuid } from '../../../src/domain/_shared/value-objects/uuid.vo';
 import { UserEntity } from '../../../src/domain/user/user.entity';
 
@@ -19,18 +18,12 @@ describe('User Entity Unit Test', () => {
         email: 'john.doe@gmail.com',
         password: 'secure_password',
       });
-
-      expect(user).toStrictEqual(
-        new UserEntity({
-          user_id: user.user_id,
-          username: 'John Doe',
-          email: 'john.doe@gmail.com',
-          password: 'secure_password',
-          is_active: true,
-          created_at: expect.any(Date),
-          updated_at: expect.any(Date),
-        }),
-      );
+      expect(user.username).toBe('John Doe');
+      expect(user.email).toBe('john.doe@gmail.com');
+      expect(user.password).toBe('secure_password');
+      expect(user.is_active).toBe(true);
+      expect(user.created_at).toBeInstanceOf(Date);
+      expect(user.updated_at).toBeInstanceOf(Date);
     });
 
     it('should create a user with optional properties', () => {
@@ -66,17 +59,14 @@ describe('User Entity Unit Test', () => {
         password: 'secure_password',
       });
 
-      expect(user).toStrictEqual(
-        new UserEntity({
-          user_id: user.user_id,
-          username: 'Alice',
-          email: 'alice@gmail.com',
-          password: 'secure_password',
-          is_active: true,
-          created_at: expect.any(Date),
-          updated_at: expect.any(Date),
-        }),
-      );
+      expect(user.user_id).toBeInstanceOf(Uuid);
+      expect(user.username).toBe('Alice');
+      expect(user.email).toBe('alice@gmail.com');
+      expect(user.password).toBe('secure_password');
+      expect(user.is_active).toBe(true);
+      expect(user.created_at).toBeInstanceOf(Date);
+      expect(user.updated_at).toBeInstanceOf(Date);
+
       expect(validateSpy).toHaveBeenCalledTimes(1);
     });
 
@@ -87,17 +77,15 @@ describe('User Entity Unit Test', () => {
         password: 'secure_password',
         is_active: false,
       });
-      expect(user).toStrictEqual(
-        new UserEntity({
-          user_id: user.user_id,
-          username: 'Bob',
-          email: 'bob@gmail.com',
-          password: 'secure_password',
-          is_active: false,
-          created_at: expect.any(Date),
-          updated_at: expect.any(Date),
-        }),
-      );
+
+      expect(user.user_id).toBeInstanceOf(Uuid);
+      expect(user.username).toBe('Bob');
+      expect(user.email).toBe('bob@gmail.com');
+      expect(user.password).toBe('secure_password');
+      expect(user.is_active).toBe(false);
+      expect(user.created_at).toBeInstanceOf(Date);
+      expect(user.updated_at).toBeInstanceOf(Date);
+
       expect(validateSpy).toHaveBeenCalledTimes(1);
     });
   });
@@ -204,18 +192,139 @@ describe('User Entity Unit Test', () => {
   });
   describe('UserValidator', () => {
     describe('create', () => {
-      it('should create a UserValidator instance', () => {
-        expect(() => {
-          UserEntity.create({
-            username: '',
-            email: '',
-            password: '',
-          });
-        }).toThrow(
-          new EntityValidationError({
-            name: ['name is required'],
-          }),
+      it('should invalidate empty username', () => {
+        const user = UserEntity.create({
+          username: '',
+          email: 'alice@gmail.com',
+          password: 'secure_password',
+        });
+
+        expect(user.notification.hasErrors()).toBe(true);
+        expect(user.notification.getErrors('username')).toContain(
+          'Username must be at least 3 characters',
         );
+      });
+      it('should invalidate username longer than 50 characters', () => {
+        const user = UserEntity.create({
+          username: 'a'.repeat(51),
+          email: 'alice@gmail.com',
+          password: 'secure_password',
+        });
+
+        expect(user.notification.hasErrors()).toBe(true);
+        expect(user.notification.getErrors('username')).toContain(
+          'String must contain at most 50 character(s)',
+        );
+      });
+      it('should invalidate empty email', () => {
+        const user = UserEntity.create({
+          username: 'Alice',
+          email: '',
+          password: 'secure_password',
+        });
+
+        expect(user.notification.hasErrors()).toBe(true);
+        expect(user.notification.getErrors('email')).toContain(
+          'Invalid email address',
+        );
+      });
+      it('should invalidate invalid email format', () => {
+        const user = UserEntity.create({
+          username: 'Alice',
+          email: 'invalid-email',
+          password: 'secure_password',
+        });
+
+        expect(user.notification.hasErrors()).toBe(true);
+        expect(user.notification.getErrors('email')).toContain(
+          'Invalid email address',
+        );
+      });
+      it('should invalidate empty password', () => {
+        const user = UserEntity.create({
+          username: 'Alice',
+          email: 'alice@gmail.com',
+          password: '',
+        });
+
+        expect(user.notification.hasErrors()).toBe(true);
+        expect(user.notification.getErrors('password')).toContain(
+          'Password must be at least 6 characters',
+        );
+      });
+      it('should invalidate password shorter than 6 characters', () => {
+        const user = UserEntity.create({
+          username: 'Alice',
+          email: 'alice@gmail.com',
+          password: '12345',
+        });
+
+        expect(user.notification.hasErrors()).toBe(true);
+        expect(user.notification.getErrors('password')).toContain(
+          'Password must be at least 6 characters',
+        );
+      });
+      it('should invalidate password longer than 100 characters', () => {
+        const user = UserEntity.create({
+          username: 'Alice',
+          email: 'alice@gmail.com',
+          password: 'a'.repeat(101),
+        });
+
+        expect(user.notification.hasErrors()).toBe(true);
+        expect(user.notification.getErrors('password')).toContain(
+          'String must contain at most 100 character(s)',
+        );
+      });
+      it('should create a valid user', () => {
+        const user = UserEntity.create({
+          username: 'Alice',
+          email: 'alice@gmail.com',
+          password: 'secure_password',
+        });
+
+        expect(user.notification.hasErrors()).toBe(false);
+        expect(user.username).toBe('Alice');
+        expect(user.email).toBe('alice@gmail.com');
+        expect(user.password).toBe('secure_password');
+        expect(user.is_active).toBe(true);
+        expect(user.created_at).toBeInstanceOf(Date);
+        expect(user.updated_at).toBeInstanceOf(Date);
+      });
+      it('should create a valid user with optional properties', () => {
+        const user = UserEntity.create({
+          username: 'Bob',
+          email: 'bob@gmail.com',
+          password: 'secure_password',
+          is_active: false,
+        });
+
+        expect(user.notification.hasErrors()).toBe(false);
+        expect(user.username).toBe('Bob');
+        expect(user.email).toBe('bob@gmail.com');
+        expect(user.password).toBe('secure_password');
+        expect(user.is_active).toBe(false);
+        expect(user.created_at).toBeInstanceOf(Date);
+        expect(user.updated_at).toBeInstanceOf(Date);
+      });
+      it('toJSON should return correct plain object representation', () => {
+        const user = UserEntity.create({
+          username: 'Alice',
+          email: 'alice@gmail.com',
+          password: 'secure_password',
+        });
+
+        const json = user.toJSON();
+
+        expect(json).toMatchObject({
+          user_id: user.user_id,
+          username: user.username,
+          email: user.email,
+          password: user.password,
+          is_active: user.is_active,
+          created_at: user.created_at,
+          updated_at: user.updated_at,
+        });
       });
     });
   });
