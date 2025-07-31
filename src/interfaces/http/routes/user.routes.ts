@@ -1,0 +1,24 @@
+import express from 'express';
+import { container } from '../../../infrastructure/container';
+import { UsersController } from '../../controllers/users.controller';
+import { CreateUserDTOSchema } from '../../dtos/create-user.dto';
+import { validateUUID } from '../middlewares/validate-uuid.middleware';
+import { validateDto } from '../middlewares/validation.middleware';
+
+const controller: UsersController = new UsersController(
+  container.createUserUseCase,
+  container.updateUserUseCase,
+  container.deleteUserUseCase,
+  container.listUsersUseCase,
+  container.searchUsersUseCase,
+);
+
+const userRouter = express.Router();
+
+userRouter.post('/', validateDto(CreateUserDTOSchema), controller.create);
+userRouter.delete('/:id', validateUUID('id'), controller.delete);
+userRouter.get('/', controller.search);
+// userRouter.patch('/:id', validateUUID('id'), controller.update);
+userRouter.patch('/:id', validateUUID('id'), controller.update);
+
+export default userRouter;

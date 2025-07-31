@@ -1,5 +1,4 @@
 import dotenv from 'dotenv';
-import dbEnvironmentVariables from '../src/shared/interface/config';
 import { Sequelize } from 'sequelize';
 
 dotenv.config({ path: '.env.test' });
@@ -15,8 +14,6 @@ describe('First Test Suite', () => {
     await sequelize.sync();
   });
   it('should pass the first test', () => {
-    console.log(process.env.NODE_ENV);
-    console.log('dbEnvironmentVariables:', dbEnvironmentVariables);
     expect(true).toBe(true);
   });
 });
