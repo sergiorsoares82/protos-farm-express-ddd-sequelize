@@ -62,17 +62,16 @@ async function initDatabase() {
 async function startServer() {
   await initDatabase();
 
-  const options = {
-    key: fs.readFileSync('./certs/key.pem'),
-    cert: fs.readFileSync('./certs/cert.pem'),
-  };
-
   const PORT = Number(process.env.PORT) || 3000;
   const HOST = process.env.HOST || '0.0.0.0';
   const HTTP_PORT = Number(process.env.HTTP_PORT) || 3001;
 
   // Start HTTPS server
   if (process.env.NODE_ENV !== 'production') {
+    const options = {
+      key: fs.readFileSync('./certs/key.pem'),
+      cert: fs.readFileSync('./certs/cert.pem'),
+    };
     console.log('🔒 Starting HTTPS server...');
     https.createServer(options, app).listen(PORT, HOST, () => {
       console.log(`🚀 HTTPS Server running at https://${HOST}:${PORT}`);
