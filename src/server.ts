@@ -72,24 +72,36 @@ async function startServer() {
   const HTTP_PORT = Number(process.env.HTTP_PORT) || 3001;
 
   // Start HTTPS server
-  https.createServer(options, app).listen(PORT, HOST, () => {
-    console.log(`🚀 HTTPS Server running at https://${HOST}:${PORT}`);
-    console.log(`🔐 Allowed origins: ${allowedOrigins.join(', ')}`);
-  });
-
-  // Start HTTP server for redirection
-  http
-    .createServer((req, res) => {
-      const host = req.headers.host?.replace(/:\d+$/, `:${PORT}`);
-      const redirectUrl = `https://${host}${req.url}`;
-      res.writeHead(301, { Location: redirectUrl });
-      res.end();
-    })
-    .listen(HTTP_PORT, HOST, () => {
-      console.log(
-        `➡️  HTTP requests on port ${HTTP_PORT} will be redirected to HTTPS`,
-      );
+  if (process.env.NODE_ENV !== 'production') {
+    console.log('🔒 Starting HTTPS server...');
+    https.createServer(options, app).listen(PORT, HOST, () => {
+      console.log(`🚀 HTTPS Server running at https://${HOST}:${PORT}`);
+      console.log(`🔐 Allowed origins: ${allowedOrigins.join(', ')}`);
     });
+
+    // Start HTTP server for redirection
+    http
+      .createServer((req, res) => {
+        const host = req.headers.host?.replace(/:\d+$/, `:${PORT}`);
+        const redirectUrl = `https://${host}${req.url}`;
+        res.writeHead(301, { Location: redirectUrl });
+        res.end();
+      })
+      .listen(HTTP_PORT, HOST, () => {
+        console.log(
+          `➡️  HTTP requests on port ${HTTP_PORT} will be redirected to HTTPS`,
+        );
+      });
+  }
+
+  // For production, you might want to use a reverse proxy like Nginx
+  else {
+    console.log('Starting server in production mode...');
+    app.listen(PORT, HOST, () => {
+      console.log(`🚀 Server running at https://${HOST}:${PORT}`);
+      console.log(`🔐 Allowed origins: ${allowedOrigins.join(', ')}`);
+    });
+  }
 }
 
 startServer();
