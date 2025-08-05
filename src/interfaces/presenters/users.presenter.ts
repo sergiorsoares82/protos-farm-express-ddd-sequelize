@@ -6,6 +6,7 @@ export class UsersPresenter {
   username: string;
   email: string;
   is_active: boolean;
+  role_id?: string | null; // Optional, if the user has a role
   created_at: Date;
   updated_at: Date;
 
@@ -14,6 +15,7 @@ export class UsersPresenter {
     this.username = user.username;
     this.email = user.email;
     this.is_active = user.is_active;
+    this.role_id = user.role_id ?? null; // Optional, if the user has a role
     this.created_at = user.created_at;
     this.updated_at = user.updated_at;
   }

@@ -9,6 +9,7 @@ type UserConstructorProps = {
   email: string;
   password: string;
   is_active?: boolean;
+  role_id?: string | null; // Assuming role is a string, adjust if it's an object
   created_at?: Date;
   updated_at?: Date;
 };
@@ -22,6 +23,7 @@ export const UserBaseSchema = z.object({
     .min(6, 'Password must be at least 6 characters')
     .max(100),
   is_active: z.boolean().optional().default(true),
+  role_id: z.string().optional().nullable(), // Optional role ID, can be null if no role assigned
 });
 
 // --- Full schema (for entity validation) ---
@@ -40,6 +42,7 @@ export class UserEntity extends Entity {
   _email: string;
   _password: string;
   _is_active: boolean;
+  _role_id?: string | null; // Optional, if the user has a role
   _created_at: Date;
   _updated_at: Date;
 
@@ -50,6 +53,7 @@ export class UserEntity extends Entity {
     this._email = props.email;
     this._password = props.password;
     this._is_active = props.is_active ?? true;
+    this._role_id = props.role_id ?? null; // Optional, can be null if no role assigned
     this._created_at = props.created_at ?? new Date();
     this._updated_at = props.updated_at ?? new Date();
     UserEntity.validate(this);
@@ -77,6 +81,10 @@ export class UserEntity extends Entity {
 
   get is_active(): boolean {
     return this._is_active;
+  }
+
+  get role_id(): string | null {
+    return this._role_id ?? null; // Return null if no role assigned
   }
 
   get created_at(): Date {
@@ -123,6 +131,12 @@ export class UserEntity extends Entity {
     this.touch();
   }
 
+  changeRole(newRoleId: string | null): void {
+    this._role_id = newRoleId;
+    this.touch();
+    UserEntity.validate(this);
+  }
+
   private touch(): void {
     this._updated_at = new Date();
   }
@@ -141,6 +155,7 @@ export class UserEntity extends Entity {
       email: this._email,
       password: this._password,
       is_active: this._is_active,
+      role_id: this._role_id, // Optional, if the user has a role
       created_at: this._created_at,
       updated_at: this._updated_at,
     };

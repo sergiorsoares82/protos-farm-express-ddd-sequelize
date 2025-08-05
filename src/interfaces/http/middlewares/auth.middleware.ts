@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from 'express';
 import type { ITokenService } from '../../../domain/services/token.interface';
-import { JwtTokenService } from '../../../application/services/jwt-token';
+import { JwtTokenService } from '../../../application/services/jwt-token.service';
 
 const tokenService: ITokenService = new JwtTokenService(
   process.env.JWT_SECRET || 'default_secret',
@@ -11,10 +11,7 @@ export function authMiddleware(
   res: Response,
   next: NextFunction,
 ) {
-  console.log('headers', req.headers);
   const authHeader = req.headers.authorization;
-  console.log('Incoming request:', req.method, req.url);
-  console.log('authHeader', authHeader);
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({ message: 'Unauthorized: No token provided' });

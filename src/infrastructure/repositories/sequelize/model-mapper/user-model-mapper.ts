@@ -10,6 +10,7 @@ export class UserModelMapper {
       email: model.email,
       password: model.password,
       is_active: model.is_active,
+      role_id: model.role_id ?? null, // Allow role_id to be null
       created_at: model.created_at,
       updated_at: model.updated_at,
     });
@@ -22,6 +23,7 @@ export class UserModelMapper {
       username: entity.username,
       email: entity.email,
       password: entity.password,
+      role_id: entity.role_id ?? null, // Allow role_id to be null
       is_active: entity.is_active,
       created_at: entity.created_at,
       updated_at: entity.updated_at,

@@ -1,4 +1,4 @@
-import { NotFoundError } from '../../../domain/_shared/errors/entity-not-found.error';
+import { EntityNotFoundError } from '../../../domain/_shared/errors/entity-not-found.error';
 import { EntityValidationError } from '../../../domain/_shared/validators/validation.error';
 import { Uuid } from '../../../domain/_shared/value-objects/uuid.vo';
 import { UserEntity } from '../../../domain/user/user.entity';
@@ -17,7 +17,7 @@ export class UpdateUserUseCase
     const user = await this.userRepository.findById(uuid);
 
     if (!user) {
-      throw new NotFoundError(uuid, UserEntity);
+      throw new EntityNotFoundError(uuid, UserEntity);
     }
 
     if (input.email) {
@@ -47,6 +47,11 @@ export class UpdateUserUseCase
 
     if (input.is_active === false) {
       user.deactivate();
+    }
+
+    if (input.role_id !== undefined) {
+      console.log('input.role_id', input.role_id);
+      user.changeRole(input.role_id ?? null); // Allow role_id to be null
     }
 
     if (user.notification.hasErrors()) {

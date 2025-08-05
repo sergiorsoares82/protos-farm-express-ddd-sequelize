@@ -1,18 +1,18 @@
 import { QueryInterface } from 'sequelize';
-import { userSchemaFields } from '../../repositories/sequelize/schemas/user.schema';
+import { roleSchemaFields } from '../../repositories/sequelize/schemas/role.schema';
 
 export const up = async ({
   context: queryInterface,
 }: {
   context: QueryInterface;
-}): Promise<void> => {
-  queryInterface.createTable('users', userSchemaFields);
+}) => {
+  await queryInterface.createTable('roles', roleSchemaFields);
 };
 
 export const down = async ({
   context: queryInterface,
 }: {
   context: QueryInterface;
-}): Promise<void> => {
-  queryInterface.dropTable('users');
+}) => {
+  await queryInterface.dropTable('roles');
 };

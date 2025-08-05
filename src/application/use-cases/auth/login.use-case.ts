@@ -35,7 +35,6 @@ export class LoginUseCase implements IUseCase<LoginInput, AuthLoginOutput> {
     const payload = {
       id: user.user_id,
       username: user.username,
-      // role: user.role,
     };
     const accessToken = this.tokenService.generateAccessToken(payload);
 

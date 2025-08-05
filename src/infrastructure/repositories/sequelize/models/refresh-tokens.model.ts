@@ -1,18 +1,7 @@
 import { Model, Sequelize } from 'sequelize';
-import { refreshTokenSchemaFields } from '../schemas/refresh-token.schema';
+import { refreshTokenSchemaFields } from '../schemas/refresh-tokens.schema';
 
-type RefreshTokenAttributes = {
-  token_id: string;
-  user_id: string;
-  token_hash: string;
-  expires_at: Date;
-  created_at: Date;
-};
-
-export class RefreshTokenModel
-  extends Model<RefreshTokenAttributes>
-  implements RefreshTokenAttributes
-{
+export class RefreshTokenModel extends Model {
   declare token_id: string;
   declare user_id: string;
   declare token_hash: string;

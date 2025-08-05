@@ -17,7 +17,9 @@ export class RefreshTokenUseCase {
       return { success: false, error: 'Invalid refresh token' };
 
     const tokenHash = createHash('sha256').update(refreshToken).digest('hex');
-    const stored = await this.refreshTokenRepository.findById(payload.tokenId);
+    const stored = await this.refreshTokenRepository.findByTokenId(
+      payload.tokenId,
+    );
     if (!stored || stored.token_hash !== tokenHash || stored.isExpired()) {
       return { success: false, error: 'Invalid or expired refresh token' };
     }

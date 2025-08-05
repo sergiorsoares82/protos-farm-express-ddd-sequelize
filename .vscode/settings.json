@@ -1,3 +1,10 @@
 {
-  "cSpell.ignoreWords": ["UUIDV", "Umzug", "dtos", "umzug"]
+  "cSpell.ignoreWords": [
+    "UUIDV",
+    "Umzug",
+    "dtos",
+    "setex",
+    "umzug",
+    "uuidv"
+  ]
 }

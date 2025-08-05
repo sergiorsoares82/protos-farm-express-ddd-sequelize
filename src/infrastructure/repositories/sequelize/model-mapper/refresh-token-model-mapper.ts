@@ -1,6 +1,6 @@
 import { Uuid } from '../../../../domain/_shared/value-objects/uuid.vo';
 import { RefreshTokenEntity } from '../../../../domain/auth/refresh-token.entity';
-import { RefreshTokenModel } from '../models/refresh-token.model';
+import { RefreshTokenModel } from '../models/refresh-tokens.model';
 
 export class RefreshTokenModelMapper {
   static toEntity(model: RefreshTokenModel): RefreshTokenEntity {

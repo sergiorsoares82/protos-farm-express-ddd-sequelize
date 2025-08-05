@@ -1,8 +1,8 @@
 // infrastructure/container.ts
 import { UserSequelizeRepository } from './repositories/sequelize/repositories/user-sequelize.repository';
 import { UserModel } from './repositories/sequelize/models/user.model';
-import { BcryptPasswordHasher } from '../application/services/bcrypt-password-hasher';
-import { JwtTokenService } from '../application/services/jwt-token';
+import { BcryptPasswordHasher } from '../application/services/bcrypt-password-hasher.service';
+import { JwtTokenService } from '../application/services/jwt-token.service';
 import { CreateUserUseCase } from '../application/use-cases/users/create-user.use-case';
 import { UpdateUserUseCase } from '../application/use-cases/users/update-user.use-case';
 import { DeleteUserUseCase } from '../application/use-cases/users/delete-user.use-case';
