@@ -69,8 +69,8 @@ async function startServer() {
   // Start HTTPS server
   if (process.env.NODE_ENV !== 'production') {
     const options = {
-      key: fs.readFileSync('./certs/key.pem'),
-      cert: fs.readFileSync('./certs/cert.pem'),
+      key: fs.readFileSync('./certs/localhost+2-key.pem'),
+      cert: fs.readFileSync('./certs/localhost+2.pem'),
     };
     console.log('🔒 Starting HTTPS server...');
     https.createServer(options, app).listen(PORT, HOST, () => {

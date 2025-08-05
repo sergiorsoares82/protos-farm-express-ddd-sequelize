@@ -42,6 +42,16 @@ async function main() {
         }
         break;
 
+      case 'up':
+        if (arg === 'all') {
+          console.log('Aplicando TODAS as migrações pendentes...');
+          await umzug.up();
+        } else {
+          console.log('Aplicando a próxima migração pendente...');
+          await umzug.up({ to: arg });
+        }
+        break;
+
       default:
         console.log(`
 Uso:
@@ -50,6 +60,8 @@ Uso:
   npm run migrations revert <nome>     # desfaz até uma específica
   npm run migrations redo              # refaz a última
   npm run migrations redo all          # refaz todas
+  npm run migrations up                # aplica a próxima pendente
+  npm run migrations up all            # aplica todas as pendentes
         `);
         break;
     }
