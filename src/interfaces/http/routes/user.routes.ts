@@ -15,7 +15,7 @@ const controller: UsersController = new UsersController(
 );
 
 const userRouter = express.Router();
-
+console.log('entrou nas rotas');
 userRouter.post('/', validateDto(CreateUserDTOSchema), controller.create);
 userRouter.get('/', requirePermission('view_users'), controller.search);
 userRouter.patch('/:id', validateUUID('id'), controller.update);

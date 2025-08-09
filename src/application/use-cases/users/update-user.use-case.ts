@@ -1,3 +1,4 @@
+import { EmailAlreadyInUseError } from '../../../domain/_shared/errors/email-already-in-use.error';
 import { EntityNotFoundError } from '../../../domain/_shared/errors/entity-not-found.error';
 import { EntityValidationError } from '../../../domain/_shared/validators/validation.error';
 import { Uuid } from '../../../domain/_shared/value-objects/uuid.vo';
@@ -20,20 +21,23 @@ export class UpdateUserUseCase
       throw new EntityNotFoundError(uuid, UserEntity);
     }
 
-    if (input.email) {
+    // Only check for duplicate email if it actually changed
+    if (input.email && input.email !== user._email) {
       const duplicateEmailCheck = await this.userRepository.findByEmail(
         input.email,
       );
 
       if (
         duplicateEmailCheck &&
-        duplicateEmailCheck._user_id !== user._user_id
+        duplicateEmailCheck._user_id.id !== user._user_id.id
       ) {
-        throw new Error(`Email ${input.email} is already in use.`);
+        throw new EmailAlreadyInUseError(input.email);
       }
+
+      user.changeEmail(input.email);
     }
 
-    if (input.username) {
+    if (input.username && input.username !== user._username) {
       user.changeUsername(input.username);
     }
 
@@ -41,16 +45,17 @@ export class UpdateUserUseCase
       user.changePassword(input.password);
     }
 
-    if (input.is_active === true) {
-      user.activate();
-    }
-
-    if (input.is_active === false) {
-      user.deactivate();
+    if (typeof input.is_active === 'boolean') {
+      if (input.is_active && !user.is_active) {
+        // Only activate if currently inactive
+        user.activate();
+      } else if (!input.is_active && user.is_active) {
+        // Only deactivate if currently active
+        user.deactivate();
+      }
     }
 
     if (input.role_id !== undefined) {
-      console.log('input.role_id', input.role_id);
       user.changeRole(input.role_id ?? null); // Allow role_id to be null
     }
 

@@ -31,10 +31,10 @@ app.use(
   }),
 );
 
-app.use((req, res, next) => {
-  console.log(`${req.method} ${req.originalUrl}`);
-  next();
-});
+// app.use((req, res, next) => {
+//   console.log(`${req.method} ${req.originalUrl}`);
+//   next();
+// });
 // Routes
 console.log('🔗 Registrando rotas...');
 app.use(router);

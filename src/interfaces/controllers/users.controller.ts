@@ -26,6 +26,7 @@ export class UsersController {
   };
 
   update = async (req: Request, res: Response) => {
+    console.log('entrou no patch');
     const userId = req.params.id;
     const updateUserDto: UpdateUserDTO = req.body;
     const user = await this.updateUserUseCase.execute({
