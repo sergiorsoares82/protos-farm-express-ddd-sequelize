@@ -51,7 +51,7 @@ async function initDatabase() {
     console.log('🟢 Database connected');
     initAllModels(sequelize);
     console.log('✅ Models initialized.');
-    await runMigrations();
+    await runMigrations(sequelize);
     console.log('✅ Migrations completed');
   } catch (error) {
     console.error('🔴 Failed to connect to the database:', error);

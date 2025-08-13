@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { AppError } from '../../../domain/_shared/errors/app.error';
 import { ZodError } from 'zod';
 import { EntityValidationError } from '../../../domain/_shared/validators/validation.error';
+import { SyntaxValidationError } from '../errors/syntax-validation.error';
 
 export const errorHandler = (
   err: any,
@@ -9,7 +10,7 @@ export const errorHandler = (
   res: Response,
   _next: NextFunction, // keep Express signature but ignore param
 ) => {
-  console.error('🔥 Unhandled error:', err);
+  if (err.status === 500) console.error('🔥 Unhandled error:', err);
   if (err?.stack) console.error(err.stack);
 
   // Helper to create consistent error responses
@@ -37,6 +38,12 @@ export const errorHandler = (
     return res
       .status(422)
       .json(buildErrorResponse(422, 'Entity validation failed', err.error));
+  }
+
+  if (err instanceof SyntaxValidationError && 'body' in err) {
+    return res
+      .status(400)
+      .json(buildErrorResponse(400, 'Invalid JSON payload', err.body));
   }
 
   if (err instanceof AppError) {

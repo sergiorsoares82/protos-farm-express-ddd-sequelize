@@ -6,6 +6,15 @@ export const userSchemaFields = {
     primaryKey: true,
     defaultValue: DataTypes.UUIDV4,
   },
+  person_id: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    references: {
+      model: 'persons', // Assuming there's a 'persons' table
+      key: 'person_id',
+    },
+    onDelete: 'CASCADE', // Optional: define behavior on delete
+  },
   username: {
     type: DataTypes.STRING,
     allowNull: false,

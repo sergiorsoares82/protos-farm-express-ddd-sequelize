@@ -5,6 +5,7 @@ import { UserValidatorFactory } from './user.validator';
 
 type UserConstructorProps = {
   user_id?: Uuid;
+  person_id: Uuid;
   username: string;
   email: string;
   password: string;
@@ -16,6 +17,7 @@ type UserConstructorProps = {
 
 // --- Base schema (for creation) ---
 export const UserBaseSchema = z.object({
+  person_id: z.instanceof(Uuid),
   username: z.string().min(3, 'Username must be at least 3 characters').max(50),
   email: z.string().email('Invalid email address'),
   password: z
@@ -38,6 +40,7 @@ export type UserCreateProps = z.input<typeof UserBaseSchema>;
 
 export class UserEntity extends Entity {
   _user_id: Uuid;
+  _person_id: Uuid;
   _username: string;
   _email: string;
   _password: string;
@@ -49,6 +52,7 @@ export class UserEntity extends Entity {
   constructor(props: UserConstructorProps) {
     super();
     this._user_id = props.user_id ?? new Uuid();
+    this._person_id = props.person_id;
     this._username = props.username;
     this._email = props.email;
     this._password = props.password;
@@ -65,6 +69,10 @@ export class UserEntity extends Entity {
 
   get user_id(): Uuid {
     return this._user_id;
+  }
+
+  get person_id(): Uuid {
+    return this._person_id;
   }
 
   get username(): string {
@@ -151,6 +159,7 @@ export class UserEntity extends Entity {
   toJSON(): UserConstructorProps {
     return {
       user_id: this._user_id,
+      person_id: this._person_id,
       username: this._username,
       email: this._email,
       password: this._password,

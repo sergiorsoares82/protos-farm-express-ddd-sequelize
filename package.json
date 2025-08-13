@@ -5,8 +5,8 @@
   "main": "src/server.ts",
   "scripts": {
     "dev": "docker compose up -d && tsx watch src/server.ts",
-    "test": "NODE_ENV=test npm run test:services:up && jest",
-    "test:watch": "NODE_ENV=test npm run test:services:up && jest --watchAll",
+    "test": "NODE_ENV=test npm run test:services:up && jest --detectOpenHandles --runInBand",
+    "test:watch": "NODE_ENV=test npm run test:services:up && jest --watchAll --detectOpenHandles --runInBand",
     "test:cov": "NODE_ENV=test npm run test:services:up && jest --coverage",
     "lint:eslint:check": "eslint .",
     "lint:eslint:fix": "eslint . --fix",

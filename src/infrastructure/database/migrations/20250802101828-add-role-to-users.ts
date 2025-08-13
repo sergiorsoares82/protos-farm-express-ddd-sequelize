@@ -17,5 +17,8 @@ export const down = async ({
 }: {
   context: QueryInterface;
 }) => {
-  await queryInterface.removeColumn('users', 'role_id');
+  const tableDesc = await queryInterface.describeTable('users');
+  if (tableDesc.role_id) {
+    await queryInterface.removeColumn('users', 'role_id');
+  }
 };

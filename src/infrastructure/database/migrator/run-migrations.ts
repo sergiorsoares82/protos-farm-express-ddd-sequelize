@@ -1,16 +1,29 @@
 // src/database/migration-runner.ts
 import { Umzug, SequelizeStorage } from 'umzug';
-import { sequelize } from '../sequelize';
+import { Sequelize } from 'sequelize';
 
-export const migrationRunner = new Umzug({
-  migrations: {
-    glob: 'src/infrastructure/database/migrations/*.ts', // or .ts if using ts-node
-  },
-  context: sequelize.getQueryInterface(),
-  storage: new SequelizeStorage({ sequelize }),
-  logger: console,
-});
+export function createMigrationRunner(sequelize: Sequelize) {
+  if (!sequelize) {
+    throw new Error('Sequelize instance is not initialized');
+  }
+  const queryInterface = sequelize.getQueryInterface();
+  return new Umzug({
+    migrations: {
+      glob: 'src/infrastructure/database/migrations/*.ts',
+    },
+    context: queryInterface,
+    storage: new SequelizeStorage({ sequelize }),
+    logger: console,
+  });
+}
+
+export async function runMigrations(sequelize: Sequelize) {
+  const runner = createMigrationRunner(sequelize);
+  await runner.up();
+}
 
 // Optional: expose convenience methods
-export const runMigrations = async () => migrationRunner.up();
-export const revertLastMigration = async () => migrationRunner.down();
+export const revertLastMigration = async (sequelize: Sequelize) => {
+  const runner = createMigrationRunner(sequelize);
+  await runner.down();
+};

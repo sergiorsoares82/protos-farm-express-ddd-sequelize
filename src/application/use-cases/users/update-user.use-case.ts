@@ -1,5 +1,6 @@
-import { EmailAlreadyInUseError } from '../../../domain/_shared/errors/email-already-in-use.error';
 import { EntityNotFoundError } from '../../../domain/_shared/errors/entity-not-found.error';
+import { EmailAlreadyInUseError } from '../../../domain/_shared/errors/name-already-in-use.error';
+import type { IUnitOfWork } from '../../../domain/_shared/repository/unit-of-work.interface';
 import { EntityValidationError } from '../../../domain/_shared/validators/validation.error';
 import { Uuid } from '../../../domain/_shared/value-objects/uuid.vo';
 import { UserEntity } from '../../../domain/user/user.entity';
@@ -11,9 +12,15 @@ import { UserOutputMapper, type UserOutput } from './dto/user-output';
 export class UpdateUserUseCase
   implements IUseCase<UpdateUserInput, UpdateUserOutput>
 {
-  constructor(private readonly userRepository: IUserRepository) {}
+  constructor(
+    private readonly userRepository: IUserRepository,
+    private readonly uow: IUnitOfWork,
+  ) {}
 
-  async execute(input: UpdateUserInput): Promise<UpdateUserOutput> {
+  async execute(
+    input: UpdateUserInput,
+    uow: IUnitOfWork,
+  ): Promise<UpdateUserOutput> {
     const uuid = new Uuid(input.user_id.toString());
     const user = await this.userRepository.findById(uuid);
 
@@ -63,7 +70,7 @@ export class UpdateUserUseCase
       throw new EntityValidationError(user.notification.toJSON());
     }
 
-    await this.userRepository.update(user);
+    await this.userRepository.update(user, uow.getTransaction());
 
     return UserOutputMapper.toOutput(user);
   }

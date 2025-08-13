@@ -3,14 +3,15 @@ import type { UserOutput } from '../../application/use-cases/users/dto/user-outp
 import type { CreateUserUseCase } from '../../application/use-cases/users/create-user.use-case';
 import type { ListUsersUseCase } from '../../application/use-cases/users/list-users.use-case';
 import type { SearchUsersUseCase } from '../../application/use-cases/users/search-users.use-case';
-import { SearchUsersDTOSchema } from '../dtos/search-users.dto';
+import { SearchUsersDTOSchema } from '../dtos/user/search-users.dto';
 import {
   UsersCollectionPresenter,
   UsersPresenter,
 } from '../presenters/users.presenter';
 import type { DeleteUserUseCase } from '../../application/use-cases/users/delete-user.use-case';
-import type { UpdateUserDTO } from '../dtos/update-user.dto';
+import type { UpdateUserDTO } from '../dtos/user/update-user.dto';
 import type { UpdateUserUseCase } from '../../application/use-cases/users/update-user.use-case';
+import type { IUnitOfWork } from '../../domain/_shared/repository/unit-of-work.interface';
 
 export class UsersController {
   constructor(
@@ -19,26 +20,29 @@ export class UsersController {
     private readonly deleteUserUseCase: DeleteUserUseCase,
     private readonly listUsersUseCase: ListUsersUseCase,
     private readonly searchUsersUseCase: SearchUsersUseCase,
+    private readonly uow: IUnitOfWork,
   ) {}
   create = async (req: Request, res: Response) => {
-    const user = await this.createUserUseCase.execute(req.body);
+    const user = await this.createUserUseCase.execute(req.body, this.uow);
     return res.status(201).json(UsersController.serializeUser(user));
   };
 
   update = async (req: Request, res: Response) => {
-    console.log('entrou no patch');
     const userId = req.params.id;
     const updateUserDto: UpdateUserDTO = req.body;
-    const user = await this.updateUserUseCase.execute({
-      ...updateUserDto,
-      user_id: userId,
-    });
+    const user = await this.updateUserUseCase.execute(
+      {
+        ...updateUserDto,
+        user_id: userId,
+      },
+      this.uow,
+    );
     return res.status(200).json(UsersController.serializeUser(user));
   };
 
   delete = async (req: Request, res: Response) => {
     const userId = req.params.id;
-    await this.deleteUserUseCase.execute({ user_id: userId });
+    await this.deleteUserUseCase.execute({ user_id: userId }, this.uow);
     return res.status(204).send();
   };
 

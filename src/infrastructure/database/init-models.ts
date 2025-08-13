@@ -1,4 +1,4 @@
-import { Sequelize } from 'sequelize-typescript';
+import { Sequelize } from 'sequelize';
 import {
   initRefreshTokenModel,
   RefreshTokenModel,
@@ -20,6 +20,10 @@ import {
   initRolePermissionModel,
   RolePermissionModel,
 } from '../repositories/sequelize/models/role-permission.model';
+import {
+  initPersonModel,
+  PersonModel,
+} from '../repositories/sequelize/models/person.model';
 
 export function initAllModels(sequelize: Sequelize) {
   initUserModel(sequelize);
@@ -27,8 +31,14 @@ export function initAllModels(sequelize: Sequelize) {
   initRoleModel(sequelize);
   initPermissionModel(sequelize);
   initRolePermissionModel(sequelize);
+  initPersonModel(sequelize);
 
   // Associations
+
+  // Person ↔ User
+  UserModel.belongsTo(PersonModel, { foreignKey: 'person_id', as: 'person' });
+  PersonModel.hasOne(UserModel, { foreignKey: 'person_id', as: 'users' });
+
   // Roles ↔ Permissions
   RoleModel.belongsToMany(PermissionModel, {
     through: RolePermissionModel,

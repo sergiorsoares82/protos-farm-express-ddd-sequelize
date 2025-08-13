@@ -9,6 +9,10 @@ export async function up({
   await queryInterface.createTable('users', userSchemaFields);
 }
 
-export async function down(queryInterface: QueryInterface): Promise<void> {
+export async function down({
+  context: queryInterface,
+}: {
+  context: QueryInterface;
+}): Promise<void> {
   await queryInterface.dropTable('users');
 }

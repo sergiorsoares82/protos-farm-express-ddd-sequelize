@@ -6,6 +6,7 @@ export class UserModelMapper {
   static toEntity(model: UserModel): UserEntity {
     const user = new UserEntity({
       user_id: new Uuid(model.user_id),
+      person_id: new Uuid(model.person_id),
       username: model.username,
       email: model.email,
       password: model.password,
@@ -20,11 +21,12 @@ export class UserModelMapper {
   static toModel(entity: UserEntity): UserModel {
     return UserModel.build({
       user_id: entity.user_id.id,
+      person_id: entity.person_id.id,
       username: entity.username,
       email: entity.email,
       password: entity.password,
-      role_id: entity.role_id ?? null, // Allow role_id to be null
       is_active: entity.is_active,
+      role_id: entity.role_id,
       created_at: entity.created_at,
       updated_at: entity.updated_at,
     });

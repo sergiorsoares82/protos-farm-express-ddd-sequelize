@@ -1,6 +1,6 @@
 import { UserOutputMapper } from '../../../../src/application/use-cases/users/dto/user-output';
 import { UpdateUserUseCase } from '../../../../src/application/use-cases/users/update-user.use-case';
-import { NotFoundError } from '../../../../src/domain/_shared/errors/entity-not-found.error';
+import { EntityNotFoundError } from '../../../../src/domain/_shared/errors/entity-not-found.error';
 import { EntityValidationError } from '../../../../src/domain/_shared/validators/validation.error';
 import { Uuid } from '../../../../src/domain/_shared/value-objects/uuid.vo';
 import { UserEntity } from '../../../../src/domain/user/user.entity';
@@ -40,7 +40,9 @@ describe('UpdateUserUseCase', () => {
     userRepository.findById.mockResolvedValue(null);
     const input = { user_id: '123e4567-e89b-12d3-a456-426614174000' };
 
-    await expect(useCase.execute(input as any)).rejects.toThrow(NotFoundError);
+    await expect(useCase.execute(input as any)).rejects.toThrow(
+      EntityNotFoundError,
+    );
   });
 
   it('should throw error if email is already in use by another user', async () => {
@@ -63,7 +65,7 @@ describe('UpdateUserUseCase', () => {
     };
 
     await expect(useCase.execute(input as any)).rejects.toThrow(
-      `Email duplicate@example.com is already in use.`,
+      `Email already in use`,
     );
   });
 

@@ -42,7 +42,7 @@ if (dialect === 'sqlite') {
     database: requireEnvVar('POSTGRES_DB'),
     username: requireEnvVar('POSTGRES_USER'),
     password: requireEnvVar('POSTGRES_PASSWORD'),
-    logging: true,
+    logging: false,
   };
 } else {
   throw new Error(`Unsupported database dialect: ${dialect}`);

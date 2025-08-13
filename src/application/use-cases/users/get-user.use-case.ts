@@ -1,4 +1,5 @@
-import { NotFoundError } from '../../../domain/_shared/errors/entity-not-found.error';
+import { EntityNotFoundError } from '../../../domain/_shared/errors/entity-not-found.error';
+import type { IUnitOfWork } from '../../../domain/_shared/repository/unit-of-work.interface';
 import { Uuid } from '../../../domain/_shared/value-objects/uuid.vo';
 import { UserEntity } from '../../../domain/user/user.entity';
 import type { IUserRepository } from '../../../domain/user/user.repository';
@@ -8,11 +9,11 @@ import { UserOutputMapper, type UserOutput } from './dto/user-output';
 export class GetUserUseCase implements IUseCase<GetUserInput, GetUserOutput> {
   constructor(private readonly userRepository: IUserRepository) {}
 
-  async execute(input: GetUserInput): Promise<GetUserOutput> {
+  async execute(input: GetUserInput, uow: IUnitOfWork): Promise<GetUserOutput> {
     const uuid = new Uuid(input.user_id);
-    const user = await this.userRepository.findById(uuid);
+    const user = await this.userRepository.findById(uuid, uow);
     if (!user) {
-      throw new NotFoundError(uuid, UserEntity);
+      throw new EntityNotFoundError(uuid, UserEntity);
     }
     return UserOutputMapper.toOutput(user);
   }

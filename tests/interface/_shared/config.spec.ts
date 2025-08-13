@@ -64,7 +64,7 @@ describe('sequelizeOptions', () => {
       database: 'test_db',
       username: 'test_user',
       password: 'secret',
-      logging: true,
+      logging: false,
     });
     expect(config).toHaveProperty('dialectModule');
   });

@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 export const CreateUserInputSchema = z.object({
+  person_id: z.string().nonempty(),
   username: z.string().nonempty(),
   email: z.string().nonempty(),
   password: z.string().nonempty(),

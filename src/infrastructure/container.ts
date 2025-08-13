@@ -12,6 +12,21 @@ import { LoginUseCase } from '../application/use-cases/auth/login.use-case';
 import { RefreshTokenUseCase } from '../application/use-cases/auth/refresh-token.use-case';
 import { RefreshTokenSequelizeRepository } from './repositories/sequelize/repositories/refresh-token-sequelize.repository';
 import { LogoutUseCase } from '../application/use-cases/auth/logout.use-case';
+import { CreatePersonUseCase } from '../application/use-cases/persons/create-person.use-case';
+import { PersonSequelizeRepository } from './repositories/sequelize/repositories/person-sequelize.repository';
+import { PersonModel } from './repositories/sequelize/models/person.model';
+import { PersonUniquenessService } from '../domain/person/person-uniqueness.service';
+import { UnitOfWorkSequelize } from './repositories/sequelize/unit-of-work-sequelize';
+import { Sequelize } from 'sequelize';
+import sequelizeOptions from '../interfaces/_shared/config';
+import { DeletePersonUseCase } from '../application/use-cases/persons/delete-person.use-case';
+import { SearchPersonsUseCase } from '../application/use-cases/persons/search-persons.use-case';
+import { GetPersonUseCase } from '../application/use-cases/persons/get-person.use-case';
+import { UpdatePersonUseCase } from '../application/use-cases/persons/update-person.use-case';
+
+// Unit of Work
+const sequelize = new Sequelize(sequelizeOptions);
+const uow = new UnitOfWorkSequelize(sequelize);
 
 // Shared services
 const userRepository = new UserSequelizeRepository(UserModel);
@@ -21,12 +36,14 @@ const accessTokenService = new JwtTokenService(
   process.env.JWT_SECRET || 'default_secret',
 );
 
-// Use cases
+// User use cases
 const createUserUseCase = new CreateUserUseCase(userRepository, passwordHasher);
-const updateUserUseCase = new UpdateUserUseCase(userRepository);
+const updateUserUseCase = new UpdateUserUseCase(userRepository, uow);
 const deleteUserUseCase = new DeleteUserUseCase(userRepository);
 const searchUsersUseCase = new SearchUsersUseCase(userRepository);
 const listUsersUseCase = new ListUsersUseCase(userRepository);
+
+// Auth use cases
 const loginUseCase = new LoginUseCase(
   userRepository,
   passwordHasher,
@@ -39,16 +56,45 @@ const refreshTokenUseCase = new RefreshTokenUseCase(
 );
 const logoutUseCase = new LogoutUseCase(refreshTokenRepository);
 
+// Person use cases
+const personRepository = new PersonSequelizeRepository(PersonModel);
+const personUniquenessService = new PersonUniquenessService(personRepository);
+const createPersonUseCase = new CreatePersonUseCase(
+  personRepository,
+  createUserUseCase,
+  personUniquenessService,
+  uow,
+);
+const deletePersonUseCase = new DeletePersonUseCase(
+  personRepository,
+  userRepository,
+  uow,
+);
+const searchPersonUseCase = new SearchPersonsUseCase(personRepository);
+const getPersonUseCase = new GetPersonUseCase(personRepository);
+const updatePersonUseCase = new UpdatePersonUseCase(
+  personRepository,
+  personUniquenessService,
+  uow,
+);
+
 export const container = {
   userRepository,
-  passwordHasher,
-  accessTokenService,
   createUserUseCase,
-  updateUserUseCase,
   deleteUserUseCase,
+  updateUserUseCase,
   searchUsersUseCase,
   listUsersUseCase,
-  loginUseCase,
+  passwordHasher,
   refreshTokenUseCase,
+  accessTokenService,
+  loginUseCase,
   logoutUseCase,
+  personRepository,
+  createPersonUseCase,
+  deletePersonUseCase,
+  searchPersonUseCase,
+  getPersonUseCase,
+  updatePersonUseCase,
+  uow,
 };

@@ -1,5 +1,7 @@
-import { EmailAlreadyInUseError } from '../../../domain/_shared/errors/email-already-in-use.error';
+import { EmailAlreadyInUseError } from '../../../domain/_shared/errors/name-already-in-use.error';
+import type { IUnitOfWork } from '../../../domain/_shared/repository/unit-of-work.interface';
 import { EntityValidationError } from '../../../domain/_shared/validators/validation.error';
+import { Uuid } from '../../../domain/_shared/value-objects/uuid.vo';
 import type { IPasswordHasher } from '../../../domain/services/password-hasher.interface';
 import { UserEntity } from '../../../domain/user/user.entity';
 import type { IUserRepository } from '../../../domain/user/user.repository';
@@ -15,7 +17,10 @@ export class CreateUserUseCase
     private passwordHasher: IPasswordHasher,
   ) {}
 
-  async execute(input: CreateUserInput): Promise<CreateUserOutput> {
+  async execute(
+    input: CreateUserInput,
+    uow: IUnitOfWork,
+  ): Promise<CreateUserOutput> {
     const duplicateEmailCheck = await this.userRepository.findByEmail(
       input.email,
     );
@@ -28,14 +33,17 @@ export class CreateUserUseCase
     const hashedPassword = await this.passwordHasher.hash(input.password);
     input.password = hashedPassword;
 
-    const user = UserEntity.create(input);
+    const user = UserEntity.create({
+      ...input,
+      person_id: new Uuid(input.person_id),
+    });
 
     // Implement notification logic here if needed
     if (user.notification.hasErrors()) {
       throw new EntityValidationError(user.notification.toJSON());
     }
 
-    await this.userRepository.insert(user);
+    await this.userRepository.insert(user, uow.getTransaction());
 
     // Implement output transformation if needed
     return UserOutputMapper.toOutput(user);

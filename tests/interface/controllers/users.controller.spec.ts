@@ -2,7 +2,7 @@
 
 import type { UserOutput } from '../../../src/application/use-cases/users/dto/user-output';
 import { UsersController } from '../../../src/interfaces/controllers/users.controller';
-import { SearchUsersDTOSchema } from '../../../src/interfaces/dtos/search-users.dto';
+import { SearchUsersDTOSchema } from '../../../src/interfaces/dtos/user/search-users.dto';
 import {
   UsersCollectionPresenter,
   UsersPresenter,

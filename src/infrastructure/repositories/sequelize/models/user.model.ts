@@ -5,6 +5,7 @@ import { RoleModel } from './role.model';
 
 interface UserAttributes {
   user_id: string;
+  person_id: string; // Foreign key to PersonModel
   username: string;
   email: string;
   password: string;
@@ -20,6 +21,7 @@ export class UserModel
   implements UserAttributes
 {
   declare user_id: string;
+  declare person_id: string;
   declare username: string;
   declare email: string;
   declare password: string;
